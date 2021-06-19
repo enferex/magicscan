@@ -53,8 +53,11 @@ class Scanner final {
       std::cout << "[+] Joining " << _thread->get_id() << std::endl;
 #endif
       _thread->join();
+      delete _thread;
+      _thread = nullptr;
       ++numThreadsAvailable;
     }
+
     for (auto &s : _scanners) {
       s->joinThreads();
       for (const auto &pr : s->getStats()) _stats[pr.first] += pr.second;
@@ -108,6 +111,8 @@ class Scanner final {
       scanImpl();
     else
       startThread();
+
+    joinThreads();
   }
 
   void dumpResults() {
